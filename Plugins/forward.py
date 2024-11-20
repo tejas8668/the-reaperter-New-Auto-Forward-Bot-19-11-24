@@ -24,7 +24,7 @@ async def forward(client, message):
 
                 # Send media thumbnail with formatted caption
                 if message.photo:
-                    photo_file = message.photo[-1].file_id
+                    photo_file = message.photo.file_id
                     await client.send_photo(int(to_channel), photo=photo_file, caption=caption.strip())
                 elif message.video:
                     video_file = message.video.file_id
