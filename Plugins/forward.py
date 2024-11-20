@@ -128,7 +128,7 @@ async def forward(client, message):
         if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
             await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_gplinks, "group_A")
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
-            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks, "group_B")
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_gplinks, "group_B")
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
             await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_urlstox, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
