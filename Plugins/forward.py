@@ -26,8 +26,8 @@ def shorten_url_gplinks(url):
 
 # Function to shorten URLs using Adrinolinks
 def shorten_url_adrinolinks(url):
-    api_url = 'https://gplinks.in/api'
-    api_key = '89e6e36b347f3db3f187dda37290c5927e99c18a'
+    api_url = 'https://adrinolinks.in/api'
+    api_key = '599ee2c148d46fe9061578db049f3cd32f528bf6'
     params = {
         'api': api_key,
         'url': url
@@ -94,17 +94,32 @@ async def forward(client, message):
                 tasks = []
                 if message.photo:
                     for destination in destination_channels:
-                        tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip()))
+                        if destination:
+                            try:
+                                tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip()))
+                            except ValueError as ve:
+                                logger.error(f"Failed to process destination '{destination}': {ve}")
                 elif message.video:
                     for destination in destination_channels:
-                        tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip()))
+                        if destination:
+                            try:
+                                tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip()))
+                            except ValueError as ve:
+                                logger.error(f"Failed to process destination '{destination}': {ve}")
                 elif message.document:
                     for destination in destination_channels:
-                        tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip()))
+                        if destination:
+                            try:
+                                tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip()))
+                            except ValueError as ve:
+                                logger.error(f"Failed to process destination '{destination}': {ve}")
                 else:
-                    # Send text message with only shortened Terabox links
                     for destination in destination_channels:
-                        tasks.append(client.send_message(int(destination), text=caption.strip()))
+                        if destination:
+                            try:
+                                tasks.append(client.send_message(int(destination), text=caption.strip()))
+                            except ValueError as ve:
+                                logger.error(f"Failed to process destination '{destination}': {ve}")
 
                 # Run all tasks concurrently for faster processing
                 await asyncio.gather(*tasks)
