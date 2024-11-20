@@ -12,14 +12,14 @@ class Config(object):
         },
         "group_B": {
             "sources": ["-1002349374753"],
-            "destinations": ["-1002280290177", "-1002387272968"]
+            "destinations": ["-1002117648544"]
         },
         "group_C": {
             "sources": ["-1002377412867"],
-            "destinations": ["-1002416263186", "-1002387272968"]
+            "destinations": ["-1002208109923", "-1002029626559"]
         },
         "group_D": {
             "sources": ["-1002402818813"],
-            "destinations": ["-1002387272968", "-1002387272968"]
+            "destinations": ["-1002226506656", "-1002129755717"]
         }
     }  # Ensure this closing brace matches the opening brace for CHANNELS
