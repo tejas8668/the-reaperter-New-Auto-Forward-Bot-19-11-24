@@ -1,5 +1,6 @@
 import logging
 import asyncio
+import re
 from pyrogram import filters
 from bot import channelforward
 from config import Config
@@ -12,10 +13,9 @@ async def forward(client, message):
         for id in Config.CHANNEL:
             from_channel, to_channel = id.split(":")
             if message.chat.id == int(from_channel):
-                # Extract Terabox links
-                terabox_links = []
-                if message.text:
-                    terabox_links = [word for word in message.text.split() if "terabox.com" in word]
+                # Extract Terabox links using regex to handle various formats
+                text = message.text or ""
+                terabox_links = re.findall(r'https://1024terabox.com/s/\S+', text)
 
                 # Skip the message if no Terabox links are found
                 if not terabox_links:
@@ -33,7 +33,7 @@ async def forward(client, message):
                 elif message.document:
                     await client.send_document(int(to_channel), message.document.file_id, caption=caption.strip())
                 else:
-                    # Edit text message
+                    # Send text message with only Terabox links
                     await client.send_message(int(to_channel), text=caption.strip())
 
                 logger.info(f"Forwarded a modified message with media and Terabox links from {from_channel} to {to_channel}")
