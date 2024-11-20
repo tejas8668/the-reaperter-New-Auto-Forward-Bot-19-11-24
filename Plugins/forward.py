@@ -26,8 +26,8 @@ def shorten_url_gplinks(url):
 
 # Function to shorten URLs using Adrinolinks
 def shorten_url_adrinolinks(url):
-    api_url = 'https://adrinolinks.in/api'
-    api_key = '599ee2c148d46fe9061578db049f3cd32f528bf6'
+    api_url = 'https://gplinks.in/api'
+    api_key = '89e6e36b347f3db3f187dda37290c5927e99c18a'
     params = {
         'api': api_key,
         'url': url
