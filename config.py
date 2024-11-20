@@ -23,4 +23,3 @@ class Config(object):
             "destinations": ["-1001515151515", "-1001616161616"]
         }
     }  # Ensure this closing brace matches the opening brace for CHANNELS
-}  # Ensure this closing brace matches the opening brace for Config
