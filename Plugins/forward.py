@@ -27,7 +27,9 @@ def shorten_url(url):
 @channelforward.on_message(filters.channel)
 async def forward(client, message):
     try:
+        # Iterate through each group
         for group_name, channels in Config.CHANNELS.items():
+            # Check if the message is from one of the source channels in the group
             if message.chat.id in map(int, channels['sources']):
                 # Extract Terabox links using regex to handle various formats
                 text = message.caption or message.text or ""
@@ -41,20 +43,24 @@ async def forward(client, message):
                 for i, link in enumerate(shortened_links, start=1):
                     caption += f"Video {i} - {link}\n\n"
 
-                # Send media thumbnail with formatted caption
+                # Prepare the tasks for sending messages
+                tasks = []
                 if message.photo:
                     for destination in channels['destinations']:
-                        await client.send_photo(int(destination), message.photo.file_id, caption=caption.strip())
+                        tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip()))
                 elif message.video:
                     for destination in channels['destinations']:
-                        await client.send_video(int(destination), message.video.file_id, caption=caption.strip())
+                        tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip()))
                 elif message.document:
                     for destination in channels['destinations']:
-                        await client.send_document(int(destination), message.document.file_id, caption=caption.strip())
+                        tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip()))
                 else:
                     # Send text message with only shortened Terabox links
                     for destination in channels['destinations']:
-                        await client.send_message(int(destination), text=caption.strip())
+                        tasks.append(client.send_message(int(destination), text=caption.strip()))
+
+                # Run all tasks concurrently for faster processing
+                await asyncio.gather(*tasks)
 
                 logger.info(f"Forwarded a modified message with media and shortened Terabox links from {group_name}")
                 await asyncio.sleep(1)
