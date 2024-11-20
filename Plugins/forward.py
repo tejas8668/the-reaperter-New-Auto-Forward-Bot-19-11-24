@@ -14,7 +14,7 @@ async def forward(client, message):
             from_channel, to_channel = id.split(":")
             if message.chat.id == int(from_channel):
                 # Extract Terabox links using regex to handle various formats
-                text = message.text or ""
+                text = message.caption or message.text or ""
                 terabox_links = re.findall(r'https://1024terabox.com/s/\S+', text)
 
                 # Format the caption with Terabox links only
@@ -22,11 +22,11 @@ async def forward(client, message):
 
                 # Send media thumbnail with formatted caption
                 if message.photo:
-                    await client.send_photo(int(to_channel), message.photo.file_id, caption=caption.strip())
+                    await client.send_photo(int(to_channel), photo=message.photo.file_id, caption=caption.strip())
                 elif message.video:
-                    await client.send_video(int(to_channel), message.video.file_id, caption=caption.strip())
+                    await client.send_video(int(to_channel), video=message.video.file_id, caption=caption.strip())
                 elif message.document:
-                    await client.send_document(int(to_channel), message.document.file_id, caption=caption.strip())
+                    await client.send_document(int(to_channel), document=message.document.file_id, caption=caption.strip())
                 else:
                     # Send text message with only Terabox links
                     await client.send_message(int(to_channel), text=caption.strip())
