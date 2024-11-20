@@ -20,8 +20,9 @@ def shorten_url_gplinks(url):
     if response.status_code == 200:
         data = response.json()
         if data['status'] == 'success':
+            logger.info(f"GPLinks shortened URL: {data['shortenedUrl']}")
             return data['shortenedUrl']
-    logger.error(f"Failed to shorten URL: {url}")
+    logger.error(f"Failed to shorten URL with GPLinks: {url}")
     return url
 
 # Function to shorten URLs using Adrinolinks
@@ -36,8 +37,9 @@ def shorten_url_adrinolinks(url):
     if response.status_code == 200:
         data = response.json()
         if data['status'] == 'success':
+            logger.info(f"Adrinolinks shortened URL: {data['shortenedUrl']}")
             return data['shortenedUrl']
-    logger.error(f"Failed to shorten URL: {url}")
+    logger.error(f"Failed to shorten URL with Adrinolinks: {url}")
     return url
 
 # Function to shorten URLs using URLStox
@@ -52,8 +54,9 @@ def shorten_url_urlstox(url):
     if response.status_code == 200:
         data = response.json()
         if data['status'] == 'success':
+            logger.info(f"URLStox shortened URL: {data['shortenedUrl']}")
             return data['shortenedUrl']
-    logger.error(f"Failed to shorten URL: {url}")
+    logger.error(f"Failed to shorten URL with URLStox: {url}")
     return url
 
 # Function to shorten URLs using NanoLinks
@@ -68,8 +71,9 @@ def shorten_url_nanolinks(url):
     if response.status_code == 200:
         data = response.json()
         if data['status'] == 'success':
+            logger.info(f"NanoLinks shortened URL: {data['shortenedUrl']}")
             return data['shortenedUrl']
-    logger.error(f"Failed to shorten URL: {url}")
+    logger.error(f"Failed to shorten URL with NanoLinks: {url}")
     return url
 
 @channelforward.on_message(filters.channel)
@@ -80,10 +84,13 @@ async def forward(client, message):
             if message.chat.id in map(int, source_channels):
                 # Extract Terabox links using regex to handle various formats
                 text = message.caption or message.text or ""
+                logger.info(f"Processing message text: {text}")
                 terabox_links = re.findall(r'https://1024terabox.com/s/\S+|https://terafileshare.com/s/\S+', text)
+                logger.info(f"Found Terabox links: {terabox_links}")
 
                 # Shorten Terabox links using the specified shortener function
                 shortened_links = [shortener_func(link) for link in terabox_links]
+                logger.info(f"Shortened links: {shortened_links}")
 
                 # Format the caption with shortened Terabox links labeled as Video 1, Video 2, etc.
                 caption = ""
