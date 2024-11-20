@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 # Function to shorten URLs using GPLinks
 def shorten_url(url):
     api_url = 'https://gplinks.in/api'
-    api_key = 'YOUR_API_KEY'  # Replace with your GPLinks API key
+    api_key = '89e6e36b347f3db3f187dda37290c5927e99c18a'  # Replace with your GPLinks API key
     params = {
         'api': api_key,
         'url': url
