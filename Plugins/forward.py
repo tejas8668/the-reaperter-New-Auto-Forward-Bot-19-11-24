@@ -17,7 +17,12 @@ async def forward(client, message):
                 if message.text:
                     terabox_links = [word for word in message.text.split() if "terabox" in word]
 
-                # Format the caption with Terabox links
+                # Skip the message if no Terabox links are found
+                if not terabox_links:
+                    logger.info(f"Skipped message from {from_channel} as no Terabox links were found")
+                    continue
+
+                # Format the caption with Terabox links only
                 caption = ""
                 for i, link in enumerate(terabox_links, start=1):
                     caption += f"Video {i} - {link}\n"
@@ -33,11 +38,9 @@ async def forward(client, message):
                     document_file = message.document.file_id
                     await client.send_document(int(to_channel), document=document_file, caption=caption.strip())
                 else:
-                    # If it's a text message, forward or copy
-                    if Config.AS_COPY:
-                        await message.copy(int(to_channel))
-                    else:
-                        await message.forward(int(to_channel))
+                    # Edit text message
+                    modified_text = f"{message.text}\n\n{caption.strip()}"
+                    await client.send_message(int(to_channel), text=modified_text)
 
                 logger.info(f"Forwarded a modified message with media and Terabox links from {from_channel} to {to_channel}")
                 await asyncio.sleep(1)
