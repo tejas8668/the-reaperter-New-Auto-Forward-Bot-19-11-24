@@ -105,32 +105,18 @@ async def forward(client, message):
 
                 # Prepare the tasks for sending messages
                 tasks = []
-                if message.photo:
+                if message.photo or message.video or message.document or message.text:
                     for destination in destination_channels:
                         if destination:
                             try:
-                                tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip()))
-                            except ValueError as ve:
-                                logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
-                elif message.video:
-                    for destination in destination_channels:
-                        if destination:
-                            try:
-                                tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip()))
-                            except ValueError as ve:
-                                logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
-                elif message.document:
-                    for destination in destination_channels:
-                        if destination:
-                            try:
-                                tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip()))
-                            except ValueError as ve:
-                                logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
-                else:
-                    for destination in destination_channels:
-                        if destination:
-                            try:
-                                tasks.append(client.send_message(int(destination), text=caption.strip()))
+                                if message.photo:
+                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip()))
+                                elif message.video:
+                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip()))
+                                elif message.document:
+                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip()))
+                                else:
+                                    tasks.append(client.send_message(int(destination), text=caption.strip()))
                             except ValueError as ve:
                                 logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
 
@@ -142,7 +128,7 @@ async def forward(client, message):
         if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
             await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_gplinks, "group_A")
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
-            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_gplinks, "group_B")
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks, "group_B")
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
             await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_urlstox, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
