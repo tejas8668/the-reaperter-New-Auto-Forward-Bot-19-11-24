@@ -89,6 +89,11 @@ async def forward(client, message):
                 terabox_links = re.findall(r'https://1024terabox.com/s/\S+|https://terafileshare.com/s/\S+|https://teraboxapp.com/s/\S+', text)
                 logger.info(f"Found Terabox links for {group_name}: {terabox_links}")
 
+                # Skip message if no Terabox links are found
+                if not terabox_links:
+                    logger.info(f"No Terabox links found for {group_name}. Skipping message.")
+                    return
+
                 # Shorten Terabox links using the specified shortener function
                 shortened_links = [shortener_func(link) for link in terabox_links]
                 logger.info(f"Shortened links for {group_name}: {shortened_links}")
