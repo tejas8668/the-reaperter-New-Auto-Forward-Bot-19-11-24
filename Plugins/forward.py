@@ -17,11 +17,6 @@ async def forward(client, message):
                 text = message.text or ""
                 terabox_links = re.findall(r'https://1024terabox.com/s/\S+', text)
 
-                # Skip the message if no Terabox links are found
-                if not terabox_links:
-                    logger.info(f"Skipped message from {from_channel} as no Terabox links were found")
-                    continue
-
                 # Format the caption with Terabox links only
                 caption = "\n".join(terabox_links)
 
