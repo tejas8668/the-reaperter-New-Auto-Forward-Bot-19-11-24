@@ -86,7 +86,7 @@ async def forward(client, message):
                 # Extract Terabox links using regex to handle various formats
                 text = message.caption or message.text or ""
                 logger.info(f"Message text for {group_name}: {text}")
-                terabox_links = re.findall(r'https://1024terabox.com/s/\S+|https://terafileshare.com/s/\S+', text)
+                terabox_links = re.findall(r'https://1024terabox.com/s/\S+|https://terafileshare.com/s/\S+|https://teraboxapp.com/s/\S+', text)
                 logger.info(f"Found Terabox links for {group_name}: {terabox_links}")
 
                 # Shorten Terabox links using the specified shortener function
