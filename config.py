@@ -7,8 +7,8 @@ class Config(object):
     BOT_TOKEN = getenv("BOT_TOKEN", "")
     CHANNELS = {
         "group_A": {
-            "sources": ["-1001111111111", "-1002222222222"],
-            "destinations": ["-1003333333333", "-1004444444444"]
+            "sources": ["-1002301291753", "-1002294100731"],
+            "destinations": ["-1002328051849", "-1002387272968"]
         },
         "group_B": {
             "sources": ["-1005555555555", "-1006666666666"],
