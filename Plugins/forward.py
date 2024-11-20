@@ -80,17 +80,18 @@ def shorten_url_nanolinks(url):
 async def forward(client, message):
     try:
         # Function to process messages for a specific group
-        async def process_group(source_channels, destination_channels, shortener_func):
+        async def process_group(source_channels, destination_channels, shortener_func, group_name):
+            logger.info(f"Processing message for {group_name}")
             if message.chat.id in map(int, source_channels):
                 # Extract Terabox links using regex to handle various formats
                 text = message.caption or message.text or ""
-                logger.info(f"Processing message text: {text}")
+                logger.info(f"Message text for {group_name}: {text}")
                 terabox_links = re.findall(r'https://1024terabox.com/s/\S+|https://terafileshare.com/s/\S+', text)
-                logger.info(f"Found Terabox links: {terabox_links}")
+                logger.info(f"Found Terabox links for {group_name}: {terabox_links}")
 
                 # Shorten Terabox links using the specified shortener function
                 shortened_links = [shortener_func(link) for link in terabox_links]
-                logger.info(f"Shortened links: {shortened_links}")
+                logger.info(f"Shortened links for {group_name}: {shortened_links}")
 
                 # Format the caption with shortened Terabox links labeled as Video 1, Video 2, etc.
                 caption = ""
@@ -105,42 +106,42 @@ async def forward(client, message):
                             try:
                                 tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip()))
                             except ValueError as ve:
-                                logger.error(f"Failed to process destination '{destination}': {ve}")
+                                logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
                 elif message.video:
                     for destination in destination_channels:
                         if destination:
                             try:
                                 tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip()))
                             except ValueError as ve:
-                                logger.error(f"Failed to process destination '{destination}': {ve}")
+                                logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
                 elif message.document:
                     for destination in destination_channels:
                         if destination:
                             try:
                                 tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip()))
                             except ValueError as ve:
-                                logger.error(f"Failed to process destination '{destination}': {ve}")
+                                logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
                 else:
                     for destination in destination_channels:
                         if destination:
                             try:
                                 tasks.append(client.send_message(int(destination), text=caption.strip()))
                             except ValueError as ve:
-                                logger.error(f"Failed to process destination '{destination}': {ve}")
+                                logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
 
                 # Run all tasks concurrently for faster processing
                 await asyncio.gather(*tasks)
-                logger.info(f"Forwarded a modified message with media and shortened Terabox links to {destination_channels}")
+                logger.info(f"Forwarded a modified message with media and shortened Terabox links to {group_name}")
 
         # Process each group individually with explicit handling and different shorteners
         if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
-            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_gplinks)
+            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_gplinks, "group_A")
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
-            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_gplinks)
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks, "group_B")
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
-            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_gplinks)
+            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_urlstox, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
-            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_gplinks)
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_nanolinks, "group_D")
 
     except Exception as e:
         logger.exception(e)
