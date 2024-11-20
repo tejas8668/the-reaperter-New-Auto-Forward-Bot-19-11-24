@@ -1,0 +1,27 @@
+#configpyCodeForEnvironmetFill
+
+from os import getenv
+
+class Config(object):
+    API_HASH = getenv("API_HASH")
+    API_ID = int(getenv("API_ID", 0))
+    AS_COPY = True if getenv("AS_COPY", "True") == "True" else False
+    BOT_TOKEN = getenv("BOT_TOKEN", "")
+    CHANNELS = {
+        "group_A": {
+            "sources": list(x for x in getenv("SOURCES_A", "").replace("\n", " ").split(' ')),
+            "destinations": list(x for x in getenv("DESTINATIONS_A", "").replace("\n", " ").split(' '))
+        },
+        "group_B": {
+            "sources": list(x for x in getenv("SOURCES_B", "").replace("\n", " ").split(' ')),
+            "destinations": list(x for x in getenv("DESTINATIONS_B", "").replace("\n", " ").split(' '))
+        },
+        "group_C": {
+            "sources": list(x for x in getenv("SOURCES_C", "").replace("\n", " ").split(' ')),
+            "destinations": list(x for x in getenv("DESTINATIONS_C", "").replace("\n", " ").split(' '))
+        },
+        "group_D": {
+            "sources": list(x for x in getenv("SOURCES_D", "").replace("\n", " ").split(' ')),
+            "destinations": list(x for x in getenv("DESTINATIONS_D", "").replace("\n", " ").split(' '))
+        },
+    }
