@@ -136,11 +136,11 @@ async def forward(client, message):
         if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
             await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_gplinks)
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
-            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks)
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_gplinks)
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
-            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_urlstox)
+            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_gplinks)
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
-            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_nanolinks)
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_gplinks)
 
     except Exception as e:
         logger.exception(e)
