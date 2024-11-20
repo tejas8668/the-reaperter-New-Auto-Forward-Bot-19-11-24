@@ -32,7 +32,7 @@ async def forward(client, message):
             if message.chat.id in map(int, source_channels):
                 # Extract Terabox links using regex to handle various formats
                 text = message.caption or message.text or ""
-                terabox_links = re.findall(r'https://1024terabox.com/s/\S+', text)
+                terabox_links = re.findall(r'https://1024terabox.com/s/\S+|https://terafileshare.com/s/\S+', text)
 
                 # Shorten Terabox links
                 shortened_links = [shorten_url(link) for link in terabox_links]
