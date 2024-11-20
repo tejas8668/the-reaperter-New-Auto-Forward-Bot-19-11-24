@@ -15,7 +15,7 @@ async def forward(client, message):
                 # Extract Terabox links
                 terabox_links = []
                 if message.text:
-                    terabox_links = [word for word in message.text.split() if "terabox" in word]
+                    terabox_links = [word for word in message.text.split() if "terabox.com" in word]
 
                 # Skip the message if no Terabox links are found
                 if not terabox_links:
@@ -23,24 +23,18 @@ async def forward(client, message):
                     continue
 
                 # Format the caption with Terabox links only
-                caption = ""
-                for i, link in enumerate(terabox_links, start=1):
-                    caption += f"Video {i} - {link}\n"
+                caption = "\n".join(terabox_links)
 
                 # Send media thumbnail with formatted caption
                 if message.photo:
-                    photo_file = message.photo.file_id
-                    await client.send_photo(int(to_channel), photo=photo_file, caption=caption.strip())
+                    await client.send_photo(int(to_channel), message.photo.file_id, caption=caption.strip())
                 elif message.video:
-                    video_file = message.video.file_id
-                    await client.send_video(int(to_channel), video=video_file, caption=caption.strip())
+                    await client.send_video(int(to_channel), message.video.file_id, caption=caption.strip())
                 elif message.document:
-                    document_file = message.document.file_id
-                    await client.send_document(int(to_channel), document=document_file, caption=caption.strip())
+                    await client.send_document(int(to_channel), message.document.file_id, caption=caption.strip())
                 else:
                     # Edit text message
-                    modified_text = f"{message.text}\n\n{caption.strip()}"
-                    await client.send_message(int(to_channel), text=modified_text)
+                    await client.send_message(int(to_channel), text=caption.strip())
 
                 logger.info(f"Forwarded a modified message with media and Terabox links from {from_channel} to {to_channel}")
                 await asyncio.sleep(1)
