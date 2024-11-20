@@ -27,10 +27,8 @@ def shorten_url(url):
 @channelforward.on_message(filters.channel)
 async def forward(client, message):
     try:
-        # Iterate through each group
-        for group_name, channels in Config.CHANNELS.items():
-            # Check if the message is from one of the source channels in the group
-            if message.chat.id in map(int, channels['sources']):
+        async def process_group(source_channels, destination_channels):
+            if message.chat.id in map(int, source_channels):
                 # Extract Terabox links using regex to handle various formats
                 text = message.caption or message.text or ""
                 terabox_links = re.findall(r'https://1024terabox.com/s/\S+', text)
@@ -46,23 +44,32 @@ async def forward(client, message):
                 # Prepare the tasks for sending messages
                 tasks = []
                 if message.photo:
-                    for destination in channels['destinations']:
+                    for destination in destination_channels:
                         tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip()))
                 elif message.video:
-                    for destination in channels['destinations']:
+                    for destination in destination_channels:
                         tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip()))
                 elif message.document:
-                    for destination in channels['destinations']:
+                    for destination in destination_channels:
                         tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip()))
                 else:
                     # Send text message with only shortened Terabox links
-                    for destination in channels['destinations']:
+                    for destination in destination_channels:
                         tasks.append(client.send_message(int(destination), text=caption.strip()))
 
                 # Run all tasks concurrently for faster processing
                 await asyncio.gather(*tasks)
+                logger.info(f"Forwarded a modified message with media and shortened Terabox links to {destination_channels}")
 
-                logger.info(f"Forwarded a modified message with media and shortened Terabox links from {group_name}")
-                await asyncio.sleep(1)
+        # Process each group individually using if-else statements
+        if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
+            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"])
+        elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"])
+        elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
+            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"])
+        elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"])
+
     except Exception as e:
         logger.exception(e)
