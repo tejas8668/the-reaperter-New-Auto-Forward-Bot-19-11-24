@@ -27,8 +27,8 @@ def shorten_url_gplinks(url):
 
 # Function to shorten URLs using Adrinolinks
 def shorten_url_adrinolinks(url):
-    api_url = 'https://adrinolinks.in/api'
-    api_key = '599ee2c148d46fe9061578db049f3cd32f528bf6'
+    api_url = 'https://yamlinks.com/api'
+    api_key = 'e2751979d22ced8413a931e7049e634fc38df992'
     params = {
         'api': api_key,
         'url': url
@@ -126,9 +126,9 @@ async def forward(client, message):
 
         # Process each group individually with explicit handling and different shorteners
         if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
-            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_gplinks, "group_A")
+            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_adrinolinks, "group_A")
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
-            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_gplinks, "group_B")
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks, "group_B")
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
             await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_urlstox, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
