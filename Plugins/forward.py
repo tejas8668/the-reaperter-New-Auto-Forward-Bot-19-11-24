@@ -77,19 +77,11 @@ def shorten_url_nanolinks(url):
     logger.error(f"Failed to shorten URL with NanoLinks: {url}")
     return url
 
-# Links for "How To Download" button
-HOW_TO_DOWNLOAD_LINKS = {
-    "gplinks": "https://example.com/how-to-download-gplinks",
-    "adrinolinks": "https://example.com/how-to-download-adrinolinks",
-    "urlstox": "https://example.com/how-to-download-urlstox",
-    "nanolinks": "https://example.com/how-to-download-nanolinks"
-}
-
 @channelforward.on_message(filters.channel)
 async def forward(client, message):
     try:
         # Function to process messages for a specific group
-        async def process_group(source_channels, destination_channels, shortener_func, group_name, how_to_download_link):
+        async def process_group(source_channels, destination_channels, shortener_func, group_name):
             logger.info(f"Processing message for {group_name}")
             if message.chat.id in map(int, source_channels):
                 # Extract Terabox links using regex to handle various formats
@@ -116,7 +108,7 @@ async def forward(client, message):
                 reply_markup = InlineKeyboardMarkup(
                     [
                         [
-                            InlineKeyboardButton("How To Download", url=how_to_download_link)
+                            InlineKeyboardButton("How To Download", url="https://t.me/how_to_download_0011")
                         ]
                     ]
                 )
@@ -128,13 +120,13 @@ async def forward(client, message):
                         if destination:
                             try:
                                 if message.photo:
-                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip(), parse_mode="MarkdownV2", reply_markup=reply_markup))
+                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip(), reply_markup=reply_markup))
                                 elif message.video:
-                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip(), parse_mode="MarkdownV2", reply_markup=reply_markup))
+                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip(), reply_markup=reply_markup))
                                 elif message.document:
-                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip(), parse_mode="MarkdownV2", reply_markup=reply_markup))
+                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip(), reply_markup=reply_markup))
                                 else:
-                                    tasks.append(client.send_message(int(destination), text=caption.strip(), parse_mode="MarkdownV2", reply_markup=reply_markup))
+                                    tasks.append(client.send_message(int(destination), text=caption.strip(), reply_markup=reply_markup))
                             except ValueError as ve:
                                 logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
 
@@ -144,13 +136,13 @@ async def forward(client, message):
 
         # Process each group individually with explicit handling and different shorteners
         if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
-            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_adrinolinks, "group_A", HOW_TO_DOWNLOAD_LINKS["adrinolinks"])
+            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_adrinolinks, "group_A")
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
-            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks, "group_B", HOW_TO_DOWNLOAD_LINKS["adrinolinks"])
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks, "group_B")
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
-            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_urlstox, "group_C", HOW_TO_DOWNLOAD_LINKS["urlstox"])
+            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_urlstox, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
-            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_nanolinks, "group_D", HOW_TO_DOWNLOAD_LINKS["nanolinks"])
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_nanolinks, "group_D")
 
     except Exception as e:
         logger.exception(e)
