@@ -27,8 +27,8 @@ def shorten_url_gplinks(url):
 
 # Function to shorten URLs using Adrinolinks
 def shorten_url_adrinolinks(url):
-    api_url = 'https://yamlinks.com/api'
-    api_key = 'e2751979d22ced8413a931e7049e634fc38df992'
+    api_url = 'https://clickspay.in/api'
+    api_key = '2be0849743f9dae76487a66551105da32b68165f'
     params = {
         'api': api_key,
         'url': url
