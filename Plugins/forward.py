@@ -79,10 +79,10 @@ def shorten_url_nanolinks(url):
 
 # Links for "How To Download" button
 HOW_TO_DOWNLOAD_LINKS = {
-    "gplinks": "https://t.me/how_to_download_0011",
-    "adrinolinks": "https://t.me/how_to_download_0011/6",
-    "urlstox": "https://t.me/how_to_download_0011",
-    "nanolinks": "https://t.me/how_to_download_0011"
+    "gplinks": "https://example.com/how-to-download-gplinks",
+    "adrinolinks": "https://example.com/how-to-download-adrinolinks",
+    "urlstox": "https://example.com/how-to-download-urlstox",
+    "nanolinks": "https://example.com/how-to-download-nanolinks"
 }
 
 @channelforward.on_message(filters.channel)
@@ -128,13 +128,13 @@ async def forward(client, message):
                         if destination:
                             try:
                                 if message.photo:
-                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip(), parse_mode="html", reply_markup=reply_markup))
+                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip(), parse_mode="HTML", reply_markup=reply_markup))
                                 elif message.video:
-                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip(), parse_mode="html", reply_markup=reply_markup))
+                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip(), parse_mode="HTML", reply_markup=reply_markup))
                                 elif message.document:
-                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip(), parse_mode="html", reply_markup=reply_markup))
+                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip(), parse_mode="HTML", reply_markup=reply_markup))
                                 else:
-                                    tasks.append(client.send_message(int(destination), text=caption.strip(), parse_mode="html", reply_markup=reply_markup))
+                                    tasks.append(client.send_message(int(destination), text=caption.strip(), parse_mode="HTML", reply_markup=reply_markup))
                             except ValueError as ve:
                                 logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
 
