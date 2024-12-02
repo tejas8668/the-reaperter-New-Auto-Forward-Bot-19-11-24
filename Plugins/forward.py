@@ -35,7 +35,7 @@ def shorten_url_adrinolinks(url):
         'url': url
     }
     response = requests.get(api_url, params=params)
-    if response.status_code == 200:
+    if response.status_code == 200):
         data = response.json()
         if data['status'] == 'success':
             logger.info(f"Adrinolinks shortened URL: {data['shortenedUrl']}")
@@ -52,7 +52,7 @@ def shorten_url_urlstox(url):
         'url': url
     }
     response = requests.get(api_url, params=params)
-    if response.status_code == 200:
+    if response.status_code == 200):
         data = response.json()
         if data['status'] == 'success':
             logger.info(f"URLStox shortened URL: {data['shortenedUrl']}")
@@ -69,7 +69,7 @@ def shorten_url_nanolinks(url):
         'url': url
     }
     response = requests.get(api_url, params=params)
-    if response.status_code == 200:
+    if response.status_code == 200):
         data = response.json()
         if data['status'] == 'success':
             logger.info(f"NanoLinks shortened URL: {data['shortenedUrl']}")
@@ -128,13 +128,13 @@ async def forward(client, message):
                         if destination:
                             try:
                                 if message.photo:
-                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip(), parse_mode="html", reply_markup=reply_markup))
+                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip(), parse_mode="HTML", reply_markup=reply_markup))
                                 elif message.video:
-                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip(), parse_mode="html", reply_markup=reply_markup))
+                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip(), parse_mode="HTML", reply_markup=reply_markup))
                                 elif message.document:
-                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip(), parse_mode="html", reply_markup=reply_markup))
+                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip(), parse_mode="HTML", reply_markup=reply_markup))
                                 else:
-                                    tasks.append(client.send_message(int(destination), text=caption.strip(), parse_mode="html", reply_markup=reply_markup))
+                                    tasks.append(client.send_message(int(destination), text=caption.strip(), parse_mode="HTML", reply_markup=reply_markup))
                             except ValueError as ve:
                                 logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
 
