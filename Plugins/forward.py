@@ -102,6 +102,7 @@ async def forward(client, message):
                 caption = ""
                 for i, link in enumerate(shortened_links, start=1):
                     caption += f"Video {i} - {link}\n\n"
+                    caption += "How To Download \n https://t.me/how_to_download_0011/6"
 
                 # Prepare the tasks for sending messages
                 tasks = []
