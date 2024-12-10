@@ -37,7 +37,7 @@ def shorten_url_adrinolinks(url):
         'url': url
     }
     # Yahan pe custom certificate bundle ka path specify karo
-    response = requests.get(api_url, params=params, verify='certificates/ca-bundle.crt')
+    response = requests.get(api_url, params=params, verify=False)
     if response.status_code == 200:
         data = response.json()
         if data['status'] == 'success':
