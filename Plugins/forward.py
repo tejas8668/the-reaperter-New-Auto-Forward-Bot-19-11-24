@@ -109,6 +109,8 @@ async def forward(client, message):
                     [
                         [
                             InlineKeyboardButton("How To Download", url="https://t.me/how_to_download_0011")
+                        ],[
+                            InlineKeyboardButton("Join Group", url="https://t.me/a_movies_request_group")
                         ]
                     ]
                 )
@@ -140,7 +142,7 @@ async def forward(client, message):
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
             await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks, "group_B")
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
-            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_urlstox, "group_C")
+            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_adrinolinks, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
             await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_nanolinks, "group_D")
 
