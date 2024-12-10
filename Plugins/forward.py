@@ -27,6 +27,8 @@ def shorten_url_gplinks(url):
     return url
 
 # Function to shorten URLs using Adrinolinks
+import requests
+
 def shorten_url_adrinolinks(url):
     api_url = 'https://clickspay.in/api'
     api_key = '2be0849743f9dae76487a66551105da32b68165f'
@@ -34,7 +36,8 @@ def shorten_url_adrinolinks(url):
         'api': api_key,
         'url': url
     }
-    response = requests.get(api_url, params=params)
+    # Yahan pe custom certificate bundle ka path specify karo
+    response = requests.get(api_url, params=params, verify='certificates/ca-bundle.crt')
     if response.status_code == 200:
         data = response.json()
         if data['status'] == 'success':
@@ -42,6 +45,7 @@ def shorten_url_adrinolinks(url):
             return data['shortenedUrl']
     logger.error(f"Failed to shorten URL with Adrinolinks: {url}")
     return url
+
 
 # Function to shorten URLs using URLStox
 def shorten_url_urlstox(url):
