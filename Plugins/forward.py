@@ -131,13 +131,13 @@ async def forward(client, message):
                         if destination:
                             try:
                                 if message.photo:
-                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=caption.strip(), reply_markup=reply_markup))
+                                    tasks.append(client.send_photo(int(destination), message.photo.file_id, caption=full_caption.strip(), reply_markup=reply_markup))
                                 elif message.video:
-                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=caption.strip(), reply_markup=reply_markup))
+                                    tasks.append(client.send_video(int(destination), message.video.file_id, caption=full_caption.strip(), reply_markup=reply_markup))
                                 elif message.document:
-                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=caption.strip(), reply_markup=reply_markup))
+                                    tasks.append(client.send_document(int(destination), message.document.file_id, caption=full_caption.strip(), reply_markup=reply_markup))
                                 else:
-                                    tasks.append(client.send_message(int(destination), text=caption.strip(), reply_markup=reply_markup))
+                                    tasks.append(client.send_message(int(destination), text=full_caption.strip(), reply_markup=reply_markup))
                             except ValueError as ve:
                                 logger.error(f"Failed to process destination '{destination}' for {group_name}: {ve}")
 
