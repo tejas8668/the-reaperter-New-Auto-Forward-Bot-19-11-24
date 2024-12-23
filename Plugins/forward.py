@@ -105,7 +105,7 @@ async def forward(client, message):
 
                 # Format the caption with shortened Terabox links labeled as Video 1, Video 2, etc.
                 header = "📥 **𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐋𝐢𝐧𝐤𝐬/👀𝐖𝐚𝐭𝐜𝐡 𝐎𝐧𝐥𝐢𝐧𝐞** 🚀\n\n"
-                footer = "\n\n**❗️ Sʜᴀʀᴇ & Sᴜᴘᴘᴏʀᴛ Us ❗️**\n\n"
+                footer = "\n**❗️ Sʜᴀʀᴇ & Sᴜᴘᴘᴏʀᴛ Us ❗️**\n\n"
                 # Generate the caption for multiple video links
                 caption = ""
                 for i, link in enumerate(shortened_links, start=1):
