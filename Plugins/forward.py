@@ -104,8 +104,8 @@ async def forward(client, message):
                 logger.info(f"Shortened links for {group_name}: {shortened_links}")
 
                 # Format the caption with shortened Terabox links labeled as Video 1, Video 2, etc.
-                header = "🚀 **Download Links for Videos** 🚀\n\n"
-                footer = "\n\n**For more information, check out the links below:**\n\n"
+                header = "📥 **𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐋𝐢𝐧𝐤𝐬/👀𝐖𝐚𝐭𝐜𝐡 𝐎𝐧𝐥𝐢𝐧𝐞** 🚀\n\n"
+                footer = "\n\n**❗️ Sʜᴀʀᴇ & Sᴜᴘᴘᴏʀᴛ Us ❗️**\n\n"
                 # Generate the caption for multiple video links
                 caption = ""
                 for i, link in enumerate(shortened_links, start=1):
@@ -120,6 +120,10 @@ async def forward(client, message):
                             InlineKeyboardButton("How To Download", url="https://t.me/how_to_download_0011")
                         ],[
                             InlineKeyboardButton("Join Group", url="https://t.me/a_movies_request_group")
+                        ],[
+                            InlineKeyboardButton("HollyWood Movies", url="https://t.me/+OXjXqutoKyI5ZTM1")
+                        ],[
+                            InlineKeyboardButton("18+", url="https://t.me/+-S4ZEZhKrSZlYWZl")
                         ]
                     ]
                 )
