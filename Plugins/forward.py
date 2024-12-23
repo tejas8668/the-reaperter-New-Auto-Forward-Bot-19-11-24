@@ -104,10 +104,15 @@ async def forward(client, message):
                 logger.info(f"Shortened links for {group_name}: {shortened_links}")
 
                 # Format the caption with shortened Terabox links labeled as Video 1, Video 2, etc.
+                header = "🚀 **Download Links for Videos** 🚀\n\n"
+                footer = "\n\n**For more information, check out the links below:**\n\n"
+                # Generate the caption for multiple video links
                 caption = ""
                 for i, link in enumerate(shortened_links, start=1):
-                    caption += f"Video {i} - {link}\n\n"
+                caption += f"**Video {i} -** {link}\n\n"
 
+                # Combine header, caption, and footer
+                full_caption = f"{header}{caption}{footer}"
                 # Create an inline keyboard button for "How To Download"
                 reply_markup = InlineKeyboardMarkup(
                     [
