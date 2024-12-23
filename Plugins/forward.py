@@ -111,8 +111,8 @@ async def forward(client, message):
                 for i, link in enumerate(shortened_links, start=1):
                     caption += f"**Video {i} -** {link}\n\n"
 
-                    # Combine header, caption, and footer
-                    full_caption = f"{header}{caption}{footer}"
+                # Combine header, caption, and footer
+                full_caption = f"{header}{caption}{footer}"
                     # Create an inline keyboard button for "How To Download"
                 reply_markup = InlineKeyboardMarkup(
                     [
