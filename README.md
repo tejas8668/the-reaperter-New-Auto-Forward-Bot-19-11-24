@@ -58,3 +58,21 @@ about - to know about me
 [![saythanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/kennethreitz)
 - [Dan](https://telegram.dog/haskell) for his pyrogram docs
 - [MaheshMalekar](https://telegram.dog/MaheshMalekar) ❤
+
+
+
+def shorten_url_nanolinks(url):
+    api_url = 'https://nanolinks.in/api'
+    api_key = 'a1207f2847c4499f4d83b03320656157f8b4a1be'
+    params = {
+        'api': api_key,
+        'url': url
+    }
+    response = requests.get(api_url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        if data['status'] == 'success':
+            logger.info(f"NanoLinks shortened URL: {data['shortenedUrl']}")
+            return data['shortenedUrl']
+    logger.error(f"Failed to shorten URL with NanoLinks: {url}")
+    return url
