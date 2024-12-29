@@ -105,7 +105,7 @@ async def forward(client, message):
 
                 # Format the caption with shortened Terabox links labeled as Video 1, Video 2, etc.
                 header = "📥 **𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐋𝐢𝐧𝐤𝐬/👀𝐖𝐚𝐭𝐜𝐡 𝐎𝐧𝐥𝐢𝐧𝐞** 🚀\n\n"
-                footer = "\n**❗️ Watch Terabox Link WithOut Ads ❗️**\nhttps://t.me/TeraBox_Stream_Link_Bot\n\n"
+                footer = "\n**❗Watch Terabox Video Link Without Ads❗️**\nhttps://t.me/TeraBox_Stream_Link_Bot\n\nSouth Hindi Movies\nhttps://t.me/+yN4HIeD6QP5hNmQ1"
                 # Generate the caption for multiple video links
                 caption = ""
                 for i, link in enumerate(shortened_links, start=1):
@@ -157,7 +157,7 @@ async def forward(client, message):
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
             await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_adrinolinks, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
-            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], "group_D")
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_adrinolinks, "group_D")
 
     except Exception as e:
         logger.exception(e)
