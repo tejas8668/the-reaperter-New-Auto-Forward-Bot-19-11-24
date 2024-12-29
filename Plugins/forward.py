@@ -66,19 +66,7 @@ def shorten_url_urlstox(url):
 
 # Function to shorten URLs using NanoLinks
 def shorten_url_nanolinks(url):
-    api_url = 'https://nanolinks.in/api'
-    api_key = 'a1207f2847c4499f4d83b03320656157f8b4a1be'
-    params = {
-        'api': api_key,
-        'url': url
-    }
-    response = requests.get(api_url, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        if data['status'] == 'success':
-            logger.info(f"NanoLinks shortened URL: {data['shortenedUrl']}")
-            return data['shortenedUrl']
-    logger.error(f"Failed to shorten URL with NanoLinks: {url}")
+    # Instead of shortening, just return the original URL
     return url
 
 @channelforward.on_message(filters.channel)
@@ -157,7 +145,7 @@ async def forward(client, message):
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
             await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_adrinolinks, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
-            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_adrinolinks, "group_D")
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_nanolinks, "group_D")
 
     except Exception as e:
         logger.exception(e)
