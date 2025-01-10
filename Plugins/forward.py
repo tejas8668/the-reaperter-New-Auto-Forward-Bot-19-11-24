@@ -49,8 +49,8 @@ def shorten_url_adrinolinks(url):
 
 # Function to shorten URLs using URLStox
 def shorten_url_urlstox(url):
-    api_url = 'https://urlstox.com/api'
-    api_key = 'a9b9102d1c71b90ca824090cb869334f596774ac'
+    api_url = 'https://arolinks.com/api'
+    api_key = '90bcb2590cca0a2b438a66e178f5e90fea2dc8b4'
     params = {
         'api': api_key,
         'url': url
@@ -139,13 +139,13 @@ async def forward(client, message):
 
         # Process each group individually with explicit handling and different shorteners
         if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
-            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_adrinolinks, "group_A")
+            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_urlstox, "group_A")
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
-            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_adrinolinks, "group_B")
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_urlstox, "group_B")
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
             await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_nanolinks, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
-            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_adrinolinks, "group_D")
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_urlstox, "group_D")
 
     except Exception as e:
         logger.exception(e)
