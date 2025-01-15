@@ -26,8 +26,22 @@ def shorten_url_gplinks(url):
     logger.error(f"Failed to shorten URL with GPLinks: {url}")
     return url
 
+def extract_id_from_url(url):
+    try:
+        # Split the URL by '/' and get the last part
+        url_parts = url.split('/')
+        if url_parts:
+            file_id = url_parts[-1]
+            edit_id = f"https://t.me/TeraBox_OnlineBot?start=terabox-{file_id}"
+            logger.info(f"Extracted ID: {file_id}")
+            return edit_id
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+    
+    logger.error(f"Failed to extract ID from URL: {url}")
+    return url
+
 # Function to shorten URLs using Adrinolinks
-import requests
 
 def shorten_url_adrinolinks(url):
     api_url = 'https://clickspay.in/api'
@@ -145,7 +159,7 @@ async def forward(client, message):
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
             await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], shorten_url_nanolinks, "group_C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
-            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_urlstox, "group_D")
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], extract_id_from_url, "group_D")
 
     except Exception as e:
         logger.exception(e)
