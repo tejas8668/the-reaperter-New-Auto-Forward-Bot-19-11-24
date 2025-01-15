@@ -111,7 +111,7 @@ async def forward(client, message):
                 # Generate the caption for multiple video links
                 caption = ""
                 for i, link in enumerate(shortened_links, start=1):
-                    caption += f"**Video {i} -** {link}\n\n"
+                    caption += f"**Video {i} -** [Click Here]({link})\n\n"
 
                 # Combine header, caption, and footer
                 full_caption = f"{header}{caption}{footer}"
