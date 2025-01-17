@@ -64,7 +64,7 @@ def shorten_url_adrinolinks(url):
 # Function to shorten URLs using URLStox
 def shorten_url_urlstox(url):
     api_url = 'https://arolinks.com/api'
-    api_key = '90bcb2590cca0a2b438a66e178f5e90fea2dc8b4'
+    api_key = '180027087e13f4a147d7615e8ac5a8d93240050c'
     params = {
         'api': api_key,
         'url': url
