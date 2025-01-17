@@ -16,10 +16,10 @@ class Config(object):
         },
         "group_C": {
             "sources": ["-1002377412867"],
-            "destinations": ["-1002208109923", "-1002029626559", "-1002461641026", "-1002332046404"]
+            "destinations": ["-1002208109923", "-1002461641026", "-1002332046404"]
         },
         "group_D": {
             "sources": ["-1002402818813"],
-            "destinations": ["-1002226506656", "-1002129755717"]
+            "destinations": ["-1002426553583"]
         }
     }  # Ensure this closing brace matches the opening brace for CHANNELS
