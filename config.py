@@ -20,6 +20,6 @@ class Config(object):
         },
         "group_D": {
             "sources": ["-1002402818813"],
-            "destinations": ["-1002426553583"]
+            "destinations": ["-1002484254899"]
         }
     }  # Ensure this closing brace matches the opening brace for CHANNELS
