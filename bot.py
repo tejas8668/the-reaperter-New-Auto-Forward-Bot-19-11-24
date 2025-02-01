@@ -62,6 +62,10 @@ def forward_messages(context):
             # Reset the index to start from the beginning after all messages have been forwarded
             if last_forwarded_index >= len(message_queue):
                 last_forwarded_index = 0  # Start from the beginning
+                if not message_queue:  # Check if message_queue is empty
+                    context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
+                else:
+                    context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
             else:
                 context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
         else:
@@ -69,7 +73,7 @@ def forward_messages(context):
     except NetworkError:
         logger.error('NetworkError: Unable to send messages due to network issues. Retrying...')
         context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
-
+        
 # Error handle karne ka function
 def error_handler(update, context):
     try:
