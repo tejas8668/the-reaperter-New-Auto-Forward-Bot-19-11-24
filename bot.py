@@ -62,6 +62,9 @@ def forward_messages(context):
             # Reset the index to start from the beginning after all messages have been forwarded
             if last_forwarded_index >= len(message_queue):
                 last_forwarded_index = 0  # Start from the beginning
+            else:
+                context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
+        else:
             context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
     except NetworkError:
         logger.error('NetworkError: Unable to send messages due to network issues. Retrying...')
@@ -98,7 +101,7 @@ def main():
 
     # Job queue me function schedule karna
     job_queue = updater.job_queue
-    job_queue.run_repeating(forward_messages, interval=FORWARD_INTERVAL, first=0)
+    job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
 
     # Bot ko start karne ka function
     updater.start_polling()
