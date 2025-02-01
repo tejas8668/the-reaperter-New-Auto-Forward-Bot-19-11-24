@@ -6,6 +6,9 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from bot import channelforward
 from config import Config
+from pyrogram import Client
+
+client = Client("my_bot")
 
 logger = logging.getLogger(__name__)
 
