@@ -1,4 +1,3 @@
-
 import os
 from dotenv import load_dotenv
 import time
@@ -23,7 +22,7 @@ FORWARD_MESSAGES = 2
 
 # Deque to store messages
 message_queue = deque(maxlen=MAX_MESSAGES)
-FORWARD_INTERVAL = 60  # Default: 2 minutes (in seconds)
+FORWARD_INTERVAL = 60  # Default: 1 minute (in seconds)
 last_forwarded_index = 0  # Keep track of the last forwarded message index
 
 # Logging setup
@@ -52,20 +51,19 @@ def forward_messages(context):
     global last_forwarded_index
     try:
         if message_queue:
-            for _ in range(FORWARD_MESSAGES):
-                if last_forwarded_index < len(message_queue):
-                    message_data = message_queue[last_forwarded_index]
-                    if message_data['media']:
-                        context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
-                    else:
-                        context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
-                    last_forwarded_index += 1
+            forwarded_count = 0
+            while forwarded_count < FORWARD_MESSAGES and last_forwarded_index < len(message_queue):
+                message_data = message_queue[last_forwarded_index]
+                if message_data['media']:
+                    context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
                 else:
-                    break
+                    context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
+                last_forwarded_index += 1
+                forwarded_count += 1
             # Schedule the next forward cycle only once the current forwarding completes
-            context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
             if last_forwarded_index >= len(message_queue):
                 last_forwarded_index = 0  # Reset the index to start from the beginning again
+            context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
     except NetworkError:
         logger.error('NetworkError: Unable to send messages due to network issues. Retrying...')
         context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
