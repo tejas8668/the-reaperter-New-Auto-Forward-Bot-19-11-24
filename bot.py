@@ -1,37 +1,71 @@
+import os
+from dotenv import load_dotenv
+import time
+from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
+from collections import deque
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(lineno)d - %(module)s - %(levelname)s - %(message)s'
-)
-logging.getLogger().setLevel(logging.INFO)
-logging.getLogger("pyrogram").setLevel(logging.WARNING)
 
-import uvloop
-uvloop.install()
-from config import Config
-from pyrogram import Client 
+# Environment variable load karen
+load_dotenv()
 
+# Bot token yahan environment variable se lein
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-class channelforward(Client, Config):
-    def __init__(self):
-        super().__init__(
-            name="CHANNELFORWARD",
-            bot_token=self.BOT_TOKEN,
-            api_id=self.API_ID,
-            api_hash=self.API_HASH,
-            workers=20,
-            plugins={'root': 'Plugins'}
-        )
+# Source aur destination channel ID yahan daalein
+SOURCE_CHANNEL_ID = -1001234567890  # Source channel ID
+DESTINATION_CHANNEL_ID = -1009876543210  # Destination channel ID
 
-    async def start(self):
-        await super().start()
-        me = await self.get_me()
-        print(f"New session started for {me.first_name}({me.username})")
+# Max stored messages aur number of messages to forward
+MAX_MESSAGES = 100
+FORWARD_MESSAGES = 4
 
-    async def stop(self):
-        await super().stop()
-        print("Session stopped. Bye!!")
+# Deque to store messages
+message_queue = deque(maxlen=MAX_MESSAGES)
+FORWARD_INTERVAL = 3600  # Default: 1 hour (in seconds)
 
+# Logging setup
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-if __name__ == "__main__" :
-    channelforward().run()
+# Message handle karne ka function
+def handle_message(update, context):
+    if update.channel_post:
+        message = update.channel_post.text
+        message_queue.append(message)
+
+# Message forward karne ka function
+def forward_messages(context):
+    if message_queue:
+        for _ in range(min(FORWARD_MESSAGES, len(message_queue))):
+            message = message_queue.popleft()
+            context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message)
+
+# Time update karne ka function
+def set_interval(update, context):
+    global FORWARD_INTERVAL
+    try:
+        new_interval = int(context.args[0]) * 60  # Minutes to seconds conversion
+        FORWARD_INTERVAL = new_interval
+        context.job_queue.run_repeating(forward_messages, interval=FORWARD_INTERVAL, first=0)
+        update.message.reply_text(f'Interval set to {context.args[0]} minutes.')
+    except (IndexError, ValueError):
+        update.message.reply_text('Usage: /setinterval <minutes>')
+
+# Scheduler set karne ka function
+def main():
+    updater = Updater(BOT_TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
+
+    dispatcher.add_handler(MessageHandler(Filters.text & Filters.chat(SOURCE_CHANNEL_ID), handle_message))
+    dispatcher.add_handler(CommandHandler('setinterval', set_interval))
+
+    # Job queue me function schedule karna
+    job_queue = updater.job_queue
+    job_queue.run_repeating(forward_messages, interval=FORWARD_INTERVAL, first=0)
+
+    # Bot ko start karne ka function
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == "__main__":
+    main()
