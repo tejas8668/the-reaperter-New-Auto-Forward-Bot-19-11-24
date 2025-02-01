@@ -1,4 +1,4 @@
-'''
+
 import os
 from dotenv import load_dotenv
 import time
@@ -137,7 +137,7 @@ FORWARD_MESSAGES = 2
 
 # Deque to store messages
 message_queue = deque(maxlen=MAX_MESSAGES)
-FORWARD_INTERVAL = 120  # Default: 2 minutes (in seconds)
+FORWARD_INTERVAL = 60  # Default: 2 minutes (in seconds)
 
 # Logging setup
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -191,3 +191,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+'''
