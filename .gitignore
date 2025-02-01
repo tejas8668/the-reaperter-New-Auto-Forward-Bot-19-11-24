@@ -130,3 +130,5 @@ dmypy.json
 
 # ignore this file
 MoreCodeForReplace.txt
+
+.config.py
