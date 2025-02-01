@@ -8,3 +8,5 @@ requests==2.25.1
 Flask==2.0.3
 werkzeug==2.0.3
 pymongo
+python-telegram-bot==13.7
+python-dotenv==0.19.2
