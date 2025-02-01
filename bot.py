@@ -45,7 +45,11 @@ def forward_messages(context):
                 context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
             else:
                 context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
-        context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)  # Schedule the next forward cycle
+    # Schedule the next forward cycle if there are still messages in the queue
+    if message_queue:
+        context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
+    else:
+        context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
 
 # Time update karne ka function
 def set_interval(update, context):
@@ -76,6 +80,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
