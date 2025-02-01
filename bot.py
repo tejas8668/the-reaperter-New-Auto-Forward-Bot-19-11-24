@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import time
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
+from telegram.error import NetworkError, Conflict
 from collections import deque
 import logging
 
@@ -21,7 +22,7 @@ FORWARD_MESSAGES = 2
 
 # Deque to store messages
 message_queue = deque(maxlen=MAX_MESSAGES)
-FORWARD_INTERVAL = 40  # Default: 2 minutes (in seconds)
+FORWARD_INTERVAL = 120  # Default: 2 minutes (in seconds)
 last_forwarded_index = 0  # Keep track of the last forwarded message index
 
 # Logging setup
@@ -48,23 +49,34 @@ def handle_message(update, context):
 # Message forward karne ka function
 def forward_messages(context):
     global last_forwarded_index
-    if message_queue:
-        for _ in range(FORWARD_MESSAGES):
-            if last_forwarded_index < len(message_queue):
-                message_data = message_queue[last_forwarded_index]
-                if message_data['media']:
-                    context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
+    try:
+        if message_queue:
+            for _ in range(FORWARD_MESSAGES):
+                if last_forwarded_index < len(message_queue):
+                    message_data = message_queue[last_forwarded_index]
+                    if message_data['media']:
+                        context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
+                    else:
+                        context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
+                    last_forwarded_index += 1
                 else:
-                    context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
-                last_forwarded_index += 1
-            else:
-                break
-        # Schedule the next forward cycle if there are still messages in the queue
-        if last_forwarded_index < len(message_queue):
+                    break
+            # Schedule the next forward cycle only once the current forwarding completes
             context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
-        else:
-            last_forwarded_index = 0  # Reset the index to start from the beginning again
-            context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
+            if last_forwarded_index >= len(message_queue):
+                last_forwarded_index = 0  # Reset the index to start from the beginning again
+    except NetworkError:
+        logger.error('NetworkError: Unable to send messages due to network issues. Retrying...')
+        context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
+
+# Error handle karne ka function
+def error_handler(update, context):
+    try:
+        raise context.error
+    except Conflict:
+        logger.error('Conflict: Another instance of the bot is running.')
+    except NetworkError:
+        logger.error('NetworkError: Unable to send messages due to network issues.')
 
 # Time update karne ka function
 def set_interval(update, context):
@@ -84,6 +96,7 @@ def main():
 
     dispatcher.add_handler(MessageHandler(Filters.chat(SOURCE_CHANNEL_ID), handle_message))
     dispatcher.add_handler(CommandHandler('setinterval', set_interval))
+    dispatcher.add_error_handler(error_handler)  # Add error handler
 
     # Job queue me function schedule karna
     job_queue = updater.job_queue
