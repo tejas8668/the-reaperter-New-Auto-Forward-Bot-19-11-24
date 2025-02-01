@@ -45,7 +45,7 @@ def forward_messages(context):
                 context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
             else:
                 context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
-        context.job_queue.run_once(forward_messages, delay=FORWARD_INTERVAL)  # Schedule the next forward cycle
+        context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)  # Schedule the next forward cycle
 
 # Time update karne ka function
 def set_interval(update, context):
@@ -53,7 +53,7 @@ def set_interval(update, context):
     try:
         new_interval = int(context.args[0]) * 60  # Minutes to seconds conversion
         FORWARD_INTERVAL = new_interval
-        context.job_queue.run_once(forward_messages, delay=FORWARD_INTERVAL)
+        context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
         update.message.reply_text(f'Interval set to {context.args[0]} minutes.')
     except (IndexError, ValueError):
         update.message.reply_text('Usage: /setinterval <minutes>')
@@ -68,7 +68,7 @@ def main():
 
     # Job queue me function schedule karna
     job_queue = updater.job_queue
-    job_queue.run_once(forward_messages, delay=FORWARD_INTERVAL)
+    job_queue.run_repeating(forward_messages, interval=FORWARD_INTERVAL, first=0)
 
     # Bot ko start karne ka function
     updater.start_polling()
