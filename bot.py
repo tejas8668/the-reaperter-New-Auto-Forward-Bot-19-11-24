@@ -21,7 +21,8 @@ FORWARD_MESSAGES = 2
 
 # Deque to store messages
 message_queue = deque(maxlen=MAX_MESSAGES)
-FORWARD_INTERVAL = 120  # Default: 2 minutes (in seconds)
+FORWARD_INTERVAL = 40  # Default: 2 minutes (in seconds)
+last_forwarded_index = 0  # Keep track of the last forwarded message index
 
 # Logging setup
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -29,27 +30,41 @@ logger = logging.getLogger(__name__)
 
 # Message handle karne ka function
 def handle_message(update, context):
+    global last_forwarded_index
     if update.channel_post:
         message_data = {
             'text': update.channel_post.caption or update.channel_post.text,
             'media': update.channel_post.photo[-1].file_id if update.channel_post.photo else None
         }
+        # Add new message to the end and remove oldest messages if the max size is exceeded
+        if len(message_queue) == MAX_MESSAGES:
+            message_queue.popleft()  # Remove the oldest message
+            last_forwarded_index -= 1  # Adjust the last forwarded index
         message_queue.append(message_data)
+        # Reset forwarding if we are at the end of the queue
+        if last_forwarded_index >= len(message_queue):
+            last_forwarded_index = 0
 
 # Message forward karne ka function
 def forward_messages(context):
+    global last_forwarded_index
     if message_queue:
-        for _ in range(min(FORWARD_MESSAGES, len(message_queue))):
-            message_data = message_queue.popleft()
-            if message_data['media']:
-                context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
+        for _ in range(FORWARD_MESSAGES):
+            if last_forwarded_index < len(message_queue):
+                message_data = message_queue[last_forwarded_index]
+                if message_data['media']:
+                    context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
+                else:
+                    context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
+                last_forwarded_index += 1
             else:
-                context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
-    # Schedule the next forward cycle if there are still messages in the queue
-    if message_queue:
-        context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
-    else:
-        context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
+                break
+        # Schedule the next forward cycle if there are still messages in the queue
+        if last_forwarded_index < len(message_queue):
+            context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
+        else:
+            last_forwarded_index = 0  # Reset the index to start from the beginning again
+            context.job_queue.run_once(forward_messages, when=FORWARD_INTERVAL)
 
 # Time update karne ka function
 def set_interval(update, context):
