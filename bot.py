@@ -21,7 +21,7 @@ FORWARD_MESSAGES = 2
 
 # Deque to store messages
 message_queue = deque(maxlen=MAX_MESSAGES)
-FORWARD_INTERVAL = 120  # Default: 1 hour (in seconds)
+FORWARD_INTERVAL = 120  # Default: 2 minutes (in seconds)
 
 # Logging setup
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -30,15 +30,22 @@ logger = logging.getLogger(__name__)
 # Message handle karne ka function
 def handle_message(update, context):
     if update.channel_post:
-        message = update.channel_post.text
-        message_queue.append(message)
+        message_data = {
+            'text': update.channel_post.caption or update.channel_post.text,
+            'media': update.channel_post.photo[-1].file_id if update.channel_post.photo else None
+        }
+        message_queue.append(message_data)
 
 # Message forward karne ka function
 def forward_messages(context):
     if message_queue:
         for _ in range(min(FORWARD_MESSAGES, len(message_queue))):
-            message = message_queue.popleft()
-            context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message)
+            message_data = message_queue.popleft()
+            if message_data['media']:
+                context.bot.send_photo(chat_id=DESTINATION_CHANNEL_ID, photo=message_data['media'], caption=message_data['text'])
+            else:
+                context.bot.send_message(chat_id=DESTINATION_CHANNEL_ID, text=message_data['text'])
+        context.job_queue.run_once(forward_messages, delay=FORWARD_INTERVAL)  # Schedule the next forward cycle
 
 # Time update karne ka function
 def set_interval(update, context):
@@ -46,7 +53,7 @@ def set_interval(update, context):
     try:
         new_interval = int(context.args[0]) * 60  # Minutes to seconds conversion
         FORWARD_INTERVAL = new_interval
-        context.job_queue.run_repeating(forward_messages, interval=FORWARD_INTERVAL, first=0)
+        context.job_queue.run_once(forward_messages, delay=FORWARD_INTERVAL)
         update.message.reply_text(f'Interval set to {context.args[0]} minutes.')
     except (IndexError, ValueError):
         update.message.reply_text('Usage: /setinterval <minutes>')
@@ -56,12 +63,12 @@ def main():
     updater = Updater(BOT_TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
-    dispatcher.add_handler(MessageHandler(Filters.text & Filters.chat(SOURCE_CHANNEL_ID), handle_message))
+    dispatcher.add_handler(MessageHandler(Filters.chat(SOURCE_CHANNEL_ID), handle_message))
     dispatcher.add_handler(CommandHandler('setinterval', set_interval))
 
     # Job queue me function schedule karna
     job_queue = updater.job_queue
-    job_queue.run_repeating(forward_messages, interval=FORWARD_INTERVAL, first=0)
+    job_queue.run_once(forward_messages, delay=FORWARD_INTERVAL)
 
     # Bot ko start karne ka function
     updater.start_polling()
@@ -69,6 +76,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 '''
