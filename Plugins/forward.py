@@ -106,7 +106,7 @@ async def forward(client, message):
 
 def store_message(message, caption, reply_markup):
     global group_a_message_store
-    if len(group_a_message_store) >= 100:
+    if len(group_a_message_store) >= 10:
         group_a_message_store.pop(0)  # Remove the oldest message
     group_a_message_store.append((message, caption, reply_markup))
 
@@ -129,7 +129,7 @@ async def send_stored_messages(client):
                                 await client.send_message(int(destination), text=caption.strip(), reply_markup=reply_markup)
                         except ValueError as ve:
                             logger.error(f"Failed to process destination '{destination}' for Group A: {ve}")
-        await asyncio.sleep(3600)  # Wait for 1 hour
+        await asyncio.sleep(120)  # Wait for 1 hour
 
 # Start the task to send stored messages
 client.loop.create_task(send_stored_messages(client))
