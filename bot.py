@@ -16,12 +16,12 @@ SOURCE_CHANNEL_ID = -1002487065354  # Source channel ID
 DESTINATION_CHANNEL_ID = -1002464896968  # Destination channel ID
 
 # Max stored messages aur number of messages to forward
-MAX_MESSAGES = 100
-FORWARD_MESSAGES = 4
+MAX_MESSAGES = 10
+FORWARD_MESSAGES = 2
 
 # Deque to store messages
 message_queue = deque(maxlen=MAX_MESSAGES)
-FORWARD_INTERVAL = 3600  # Default: 1 hour (in seconds)
+FORWARD_INTERVAL = 120  # Default: 1 hour (in seconds)
 
 # Logging setup
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
