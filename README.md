@@ -76,3 +76,6 @@ def shorten_url_nanolinks(url):
             return data['shortenedUrl']
     logger.error(f"Failed to shorten URL with NanoLinks: {url}")
     return url
+
+
+    isme SOURCE_CHANNEL_IDB and DESTINATION_CHANNEL_IDB ke liye code add karo and har function ke liye seperate code likho taki sab kuch agal rahe and me dono ko jab chahu badal saku message store freature bhi dono ke alag rakho and every all function alag se batao seperate code likho sab function ke liye
