@@ -22,7 +22,7 @@ FORWARD_MESSAGES = 2
 
 # Deque to store messages
 message_queue = deque(maxlen=MAX_MESSAGES)
-FORWARD_INTERVAL = 60  # Default: 1 minute (in seconds)
+FORWARD_INTERVAL = 120  # Default: 1 minute (in seconds)
 last_forwarded_index = 0  # Keep track of the last forwarded message index
 
 # Logging setup
