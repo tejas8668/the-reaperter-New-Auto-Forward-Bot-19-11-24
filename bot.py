@@ -12,8 +12,8 @@ load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 # Source aur destination channel ID yahan daalein
-SOURCE_CHANNEL_ID = -1001234567890  # Source channel ID
-DESTINATION_CHANNEL_ID = -1009876543210  # Destination channel ID
+SOURCE_CHANNEL_ID = -1002487065354  # Source channel ID
+DESTINATION_CHANNEL_ID = -1002464896968  # Destination channel ID
 
 # Max stored messages aur number of messages to forward
 MAX_MESSAGES = 100
