@@ -9,85 +9,19 @@ from config import Config
 
 logger = logging.getLogger(__name__)
 
-# Function to shorten URLs using GPLinks
-def shorten_url_gplinks(url):
-    api_url = 'https://gplinks.in/api'
-    api_key = '89e6e36b347f3db3f187dda37290c5927e99c18a'
-    params = {
-        'api': api_key,
-        'url': url
-    }
-    response = requests.get(api_url, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        if data['status'] == 'success':
-            logger.info(f"GPLinks shortened URL: {data['shortenedUrl']}")
-            return data['shortenedUrl']
-    logger.error(f"Failed to shorten URL with GPLinks: {url}")
-    return url
+# Initialize message store for Group A
+group_a_message_store = []
 
-def extract_id_from_url(url):
-    try:
-        # Split the URL by '/' and get the last part
-        url_parts = url.split('/')
-        if url_parts:
-            file_id = url_parts[-1]
-            edit_id = f"https://t.me/TeraBox_OnlineBot?start=terabox-{file_id}"
-            logger.info(f"Extracted ID: {file_id}")
-            return edit_id
-    except Exception as e:
-        logger.error(f"An error occurred: {e}")
-    
-    logger.error(f"Failed to extract ID from URL: {url}")
-    return url
-
-# Function to shorten URLs using Adrinolinks
-
-def shorten_url_adrinolinks(url):
-    api_url = 'https://clickspay.in/api'
-    api_key = '2be0849743f9dae76487a66551105da32b68165f'
-    params = {
-        'api': api_key,
-        'url': url
-    }
-    # Yahan pe custom certificate bundle ka path specify karo
-    response = requests.get(api_url, params=params, verify=False)
-    if response.status_code == 200:
-        data = response.json()
-        if data['status'] == 'success':
-            logger.info(f"Adrinolinks shortened URL: {data['shortenedUrl']}")
-            return data['shortenedUrl']
-    logger.error(f"Failed to shorten URL with Adrinolinks: {url}")
-    return url
-
-
-# Function to shorten URLs using URLStox
-def shorten_url_urlstox(url):
-    api_url = 'https://arolinks.com/api'
-    api_key = '180027087e13f4a147d7615e8ac5a8d93240050c'
-    params = {
-        'api': api_key,
-        'url': url
-    }
-    response = requests.get(api_url, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        if data['status'] == 'success':
-            logger.info(f"URLStox shortened URL: {data['shortenedUrl']}")
-            return data['shortenedUrl']
-    logger.error(f"Failed to shorten URL with URLStox: {url}")
-    return url
-
-# Function to shorten URLs using NanoLinks
-def shorten_url_nanolinks(url):
-    # Instead of shortening, just return the original URL
-    return url
+# Define the shortener function
+def shortener_func(link):
+    # Replace this with your actual shortener function
+    return link
 
 @channelforward.on_message(filters.channel)
 async def forward(client, message):
     try:
         # Function to process messages for a specific group
-        async def process_group(source_channels, destination_channels, shortener_func, group_name):
+        async def process_group(source_channels, destination_channels, group_name):
             logger.info(f"Processing message for {group_name}")
             if message.chat.id in map(int, source_channels):
                 # Extract Terabox links using regex to handle various formats
@@ -115,7 +49,7 @@ async def forward(client, message):
 
                 # Combine header, caption, and footer
                 full_caption = f"{header}{caption}{footer}"
-                    # Create an inline keyboard button for "How To Download"
+                # Create an inline keyboard button for "How To Download"
                 reply_markup = InlineKeyboardMarkup(
                     [
                         [
@@ -129,6 +63,9 @@ async def forward(client, message):
                         ]
                     ]
                 )
+
+                # Store the message in the Group A message store
+                store_message(message, full_caption, reply_markup)
 
                 # Prepare the tasks for sending messages
                 tasks = []
@@ -153,13 +90,43 @@ async def forward(client, message):
 
         # Process each group individually with explicit handling and different shorteners
         if message.chat.id in map(int, Config.CHANNELS["group_A"]["sources"]):
-            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], shorten_url_urlstox, "group_A")
+            await process_group(Config.CHANNELS["group_A"]["sources"], Config.CHANNELS["group_A"]["destinations"], "Group A")
         elif message.chat.id in map(int, Config.CHANNELS["group_B"]["sources"]):
-            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], shorten_url_urlstox, "group_B")
+            await process_group(Config.CHANNELS["group_B"]["sources"], Config.CHANNELS["group_B"]["destinations"], "Group B")
         elif message.chat.id in map(int, Config.CHANNELS["group_C"]["sources"]):
-            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], extract_id_from_url, "group_C")
+            await process_group(Config.CHANNELS["group_C"]["sources"], Config.CHANNELS["group_C"]["destinations"], "Group C")
         elif message.chat.id in map(int, Config.CHANNELS["group_D"]["sources"]):
-            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], shorten_url_urlstox, "group_D")
+            await process_group(Config.CHANNELS["group_D"]["sources"], Config.CHANNELS["group_D"]["destinations"], "Group D")
 
     except Exception as e:
         logger.exception(e)
+
+def store_message(message, caption, reply_markup):
+    global group_a_message_store
+    if len(group_a_message_store) >= 100:
+        group_a_message_store.pop(0)  # Remove the oldest message
+    group_a_message_store.append((message, caption, reply_markup))
+
+async def send_stored_messages(client):
+    global group_a_message_store
+    while True:
+        if group_a_message_store:
+            for _ in range(min(4, len(group_a_message_store))):
+                message, caption, reply_markup = group_a_message_store.pop(0)
+                for destination in Config.CHANNELS["group_A"]["destinations"]:
+                    if destination:
+                        try:
+                            if message.photo:
+                                await client.send_photo(int(destination), message.photo.file_id, caption=caption.strip(), reply_markup=reply_markup)
+                            elif message.video:
+                                await client.send_video(int(destination), message.video.file_id, caption=caption.strip(), reply_markup=reply_markup)
+                            elif message.document:
+                                await client.send_document(int(destination), message.document.file_id, caption=caption.strip(), reply_markup=reply_markup)
+                            else:
+                                await client.send_message(int(destination), text=caption.strip(), reply_markup=reply_markup)
+                        except ValueError as ve:
+                            logger.error(f"Failed to process destination '{destination}' for Group A: {ve}")
+        await asyncio.sleep(3600)  # Wait for 1 hour
+
+# Start the task to send stored messages
+client.loop.create_task(send_stored_messages(client))
