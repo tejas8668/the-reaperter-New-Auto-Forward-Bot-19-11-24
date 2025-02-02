@@ -15,7 +15,7 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 SOURCE_CHANNEL_IDA = -1002487065354  # Source channel ID A
 SOURCE_CHANNEL_IDB = -1002464896968  # Source channel ID B
 DESTINATION_CHANNEL_IDA = -1002398034096  # Destination channel ID A
-DESTINATION_CHANNEL_IDB = --1002176533426  # Destination channel ID B
+DESTINATION_CHANNEL_IDB = -1002176533426  # Destination channel ID B
 
 # Max stored messages aur number of messages to forward
 MAX_MESSAGES_A = 10
