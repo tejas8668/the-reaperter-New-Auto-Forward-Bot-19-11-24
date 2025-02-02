@@ -12,24 +12,24 @@ load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 # Source aur destination channel ID yahan daalein
-SOURCE_CHANNEL_IDA = -1002487065354  # Source channel ID A
-SOURCE_CHANNEL_IDB = -1002464896968  # Source channel ID B
-DESTINATION_CHANNEL_IDA = -1002398034096  # Destination channel ID A
-DESTINATION_CHANNEL_IDB = -1002176533426  # Destination channel ID B
+SOURCE_CHANNEL_IDA = -1002006289778  # Source channel ID A
+SOURCE_CHANNEL_IDB = -1002295099159  # Source channel ID B
+DESTINATION_CHANNEL_IDA = -1002488212445  # Destination channel ID A
+DESTINATION_CHANNEL_IDB = -1002349374753  # Destination channel ID B
 
 # Max stored messages aur number of messages to forward
-MAX_MESSAGES_A = 10
-MAX_MESSAGES_B = 10
-FORWARD_MESSAGES_A = 2
-FORWARD_MESSAGES_B = 2
+MAX_MESSAGES_A = 36
+MAX_MESSAGES_B = 36
+FORWARD_MESSAGES_A = 3
+FORWARD_MESSAGES_B = 3
 
 # Deque to store messages
 message_queue_A = deque(maxlen=MAX_MESSAGES_A)
 message_queue_B = deque(maxlen=MAX_MESSAGES_B)
 
 # FORWARD_INTERVAL
-FORWARD_INTERVAL_A = 120  # Default: 120 seconds (2 minutes)
-FORWARD_INTERVAL_B = 120  # Default: 120 seconds (2 minutes)
+FORWARD_INTERVAL_A = 4200  # Default: 120 seconds (2 minutes)
+FORWARD_INTERVAL_B = 4200  # Default: 120 seconds (2 minutes)
 
 # Last forwarded index
 last_forwarded_index_A = 0
