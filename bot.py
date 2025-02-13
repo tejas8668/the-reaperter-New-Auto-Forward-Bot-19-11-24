@@ -38,10 +38,10 @@ message_queue_C = deque(maxlen=MAX_MESSAGES_C)
 message_queue_D = deque(maxlen=MAX_MESSAGES_D)
 
 # FORWARD_INTERVAL
-FORWARD_INTERVAL_A = 3600  # Default: 120 seconds (2 minutes)
-FORWARD_INTERVAL_B = 3600  # Default: 120 seconds (2 minutes)
-FORWARD_INTERVAL_C = 4200  # Default: 120 seconds (2 minutes)
-FORWARD_INTERVAL_D = 4200  # Default: 120 seconds (2 minutes)
+FORWARD_INTERVAL_A = 5400  # Default: 120 seconds (2 minutes)
+FORWARD_INTERVAL_B = 5400  # Default: 120 seconds (2 minutes)
+FORWARD_INTERVAL_C = 3600  # Default: 120 seconds (2 minutes)
+FORWARD_INTERVAL_D = 3600  # Default: 120 seconds (2 minutes)
 
 # Last forwarded index
 last_forwarded_index_A = 0
